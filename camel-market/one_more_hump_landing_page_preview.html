@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>One More Hump — Camel Mode</title>
+
+<style>
+:root{
+  --bg:#f6efe6;
+  --text:#2a1e12;
+  --muted:#7a6654;
+
+  /* Camel palette inspired by the character */
+  --camel-sand:#e8c89b;
+  --camel-dune:#d89f5b;
+  --camel-gold:#f2b56b;
+  --camel-shadow:#8c5a2b;
+
+  /* Accent colors from camel blanket */
+  --camel-teal:#3bb8b2;
+  --camel-purple:#7a4fd6;
+
+  --panel:#ffffff;
+  --stroke:rgba(60,40,20,.12);
+  --shadow:0 24px 80px rgba(80,50,20,.15);
+  --radius:26px;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 20%, rgba(232,200,155,.55), transparent 45%),
+    radial-gradient(circle at 90% 15%, rgba(242,181,107,.45), transparent 45%),
+    radial-gradient(circle at 60% 90%, rgba(216,159,91,.35), transparent 50%),
+    var(--bg);
+  position:relative;
+  isolation:isolate;
+}
+
+/* Soft site-wide camel photo backdrop */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background-image:url('06DDEBDD-6968-4BF1-9A79-4D3A5845162A.PNG');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  opacity:.14;
+  filter:blur(2px) saturate(1.05);
+  transform:scale(1.02);
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(180deg, rgba(246,239,230,.75), rgba(246,239,230,.92));
+}
+
+
+.container{max-width:1120px;margin:0 auto;padding:96px 20px 70px}
+
+/* Top nav (Figma-site style) */
+.nav{
+  position:sticky;
+  top:0;
+  z-index:50;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(246,239,230,.65);
+  border-bottom: 1px solid rgba(60,40,20,.10);
+}
+.nav-inner{
+  max-width:1120px;
+  margin:0 auto;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.brand-badge{
+  width:36px;height:36px;border-radius:12px;
+  background:linear-gradient(135deg,var(--camel-dune),var(--camel-gold));
+  box-shadow:0 10px 30px rgba(80,50,20,.18);
+  display:grid;place-items:center;
+  font-weight:900;
+}
+.brand-name{font-weight:950;letter-spacing:-.02em}
+.nav-links{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.nav-links a{
+  text-decoration:none;
+  color:rgba(42,30,18,.85);
+  font-weight:800;
+  font-size:13px;
+  padding:8px 10px;
+  border-radius:999px;
+}
+.nav-links a:hover{background:rgba(232,200,155,.35)}
+
+@media (max-width:860px){
+  .nav-links{display:none}
+  .container{padding-top:78px}
+}
+
+/* Section anchors */
+.anchor{scroll-margin-top:92px}
+
+/* Divider */
+.divider{height:1px;background:rgba(60,40,20,.10);margin:70px auto 0;max-width:920px;opacity:.75}
+
+/* Figma-like small badge */
+.kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(60,40,20,.12);
+  background:rgba(255,255,255,.65);
+  font-weight:900;
+  color:rgba(42,30,18,.85);
+}
+.kdot{width:10px;height:10px;border-radius:999px;background:linear-gradient(135deg,var(--camel-purple),var(--camel-teal));}
+
+/* Figma-like hero layout */
+.hero{padding:64px 24px}
+.hero-inner{grid-template-columns:1fr 1fr;gap:28px}
+.hero h1{font-size:58px}
+.hero-copy{padding-right:10px}
+.hero-actions .btn{box-shadow:0 14px 44px rgba(80,50,20,.18)}
+.hero-actions .btn.secondary{
+  background:rgba(255,255,255,.65);
+  border:1px solid rgba(60,40,20,.12);
+  color:rgba(42,30,18,.92);
+}
+
+@media (max-width:860px){
+  .hero{padding:52px 18px}
+  .hero h1{font-size:44px}
+  .hero-copy{padding-right:0}
+}
+
+/* Make cards feel more Figma-clean */
+.card{box-shadow:0 18px 56px rgba(80,50,20,.12)}
+.section-title{font-size:34px;letter-spacing:-.01em}
+.section-sub{font-size:15px;line-height:1.6}
+
+
+h1,h2,h3{margin:0}
+.section{margin-top:80px}
+.section-title{text-align:center;font-size:32px;margin-bottom:12px}
+.section-sub{text-align:center;color:var(--muted);max-width:720px;margin:0 auto 30px}
+
+.btn{
+  padding:12px 20px;
+  border-radius:999px;
+  font-weight:700;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--camel-dune),var(--camel-gold));
+  color:#07080b;
+}
+
+/* HERO */
+.hero{
+  padding:70px 22px;
+  background:rgba(255,255,255,.78);
+  border:1px solid var(--stroke);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.hero-inner{
+  display:grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap:26px;
+  align-items:center;
+}
+.hero-copy{ text-align:left; }
+.hero h1{
+  font-size:54px;
+  letter-spacing:-.02em;
+  margin-bottom:14px;
+  background:linear-gradient(90deg,var(--camel-dune),var(--camel-gold));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero p{
+  color:var(--muted);
+  max-width:640px;
+  margin:0 0 18px 0;
+  font-weight:650;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+.hero-media{
+  position:relative;
+  border-radius:22px;
+  border:1px solid rgba(60,40,20,.10);
+  background:linear-gradient(135deg, rgba(232,200,155,.28), rgba(242,181,107,.22));
+  box-shadow:0 22px 70px rgba(80,50,20,.18);
+  overflow:hidden;
+}
+.hero-media::before{
+  content:"";
+  position:absolute;
+  inset:-40px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(59,184,178,.25), transparent 55%),
+    radial-gradient(circle at 70% 40%, rgba(122,79,214,.20), transparent 60%),
+    radial-gradient(circle at 40% 80%, rgba(242,181,107,.28), transparent 60%);
+}
+.hero-camel{
+  position:relative;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:scale(1.02);
+}
+
+@media (max-width: 860px){
+  .hero-inner{grid-template-columns:1fr; text-align:center}
+  .hero-copy{ text-align:center; }
+  .hero-actions{ justify-content:center; }
+}
+
+
+/* CARD GRID */
+.grid{
+  display:grid;
+  gap:20px;
+}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.card{
+  background:rgba(255,255,255,.85);
+  border:1px solid var(--stroke);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+.card h3{margin-bottom:8px}
+.card p{color:var(--muted);font-size:14px}
+
+/* Launchpads polish */
+.lp-wrap{max-width:760px;margin:0 auto;}
+.lp-search{
+  width:min(640px, 100%);
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.92);
+  box-shadow:0 10px 30px rgba(20,24,40,.08);
+  outline:none;
+  font-weight:650;
+}
+.lp-search:focus{border-color:rgba(153,69,255,.35); box-shadow:0 14px 44px rgba(20,24,40,.10)}
+
+.lp-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.lp-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid rgba(20,24,40,.08);
+  border-radius:16px;
+  background:rgba(255,255,255,.94);
+}
+.lp-left{display:flex;align-items:center;gap:10px;min-width:0}
+.lp-name{
+  font-weight:850;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.lp-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:999px;
+  border:1px solid rgba(20,24,40,.10);
+  background:rgba(246,247,251,.85);
+  font-size:12px;
+  font-weight:800;
+  color:rgba(20,24,40,.85);
+}
+.badge.sol{border-color:rgba(20,241,149,.30); background:rgba(20,241,149,.10)}
+.badge.eth{border-color:rgba(0,194,255,.28); background:rgba(0,194,255,.10)}
+.badge.multi{border-color:rgba(153,69,255,.28); background:rgba(153,69,255,.10)}
+
+.ext{
+  display:inline-flex;align-items:center;gap:6px;
+  text-decoration:none;color:inherit;
+}
+.ext:hover{ text-decoration:underline; }
+.ext-ico{width:14px;height:14px;opacity:.75;flex:0 0 auto}
+
+/* Tooltip */
+[data-tip]{position:relative}
+[data-tip]:hover::after{
+  content:attr(data-tip);
+  position:absolute;
+  left:10px;
+  top:calc(100% + 10px);
+  z-index:20;
+  width:min(360px, 78vw);
+  padding:10px 12px;
+  background:rgba(255,255,255,.96);
+  border:1px solid rgba(20,24,40,.12);
+  border-radius:14px;
+  box-shadow:0 18px 60px rgba(20,24,40,.18);
+  color:rgba(20,24,40,.85);
+  font-size:12px;
+  font-weight:650;
+}
+[data-tip]:hover::before{
+  content:"";
+  position:absolute;
+  left:18px;
+  top:calc(100% + 4px);
+  width:10px;height:10px;
+  transform:rotate(45deg);
+  background:rgba(255,255,255,.96);
+  border-left:1px solid rgba(20,24,40,.12);
+  border-top:1px solid rgba(20,24,40,.12);
+  z-index:21;
+}
+
+/* Click stats */
+.lp-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.lp-chip{font-weight:800;font-size:12px;color:rgba(20,24,40,.75);background:rgba(255,255,255,.9);border:1px solid rgba(20,24,40,.10);border-radius:999px;padding:8px 12px}
+
+
+/* MEME LAB */
+.meme-lab{
+  background:linear-gradient(135deg, rgba(216,159,91,.18), rgba(232,200,155,.25));
+  border-radius:var(--radius);
+  padding:40px;
+  border:1px solid var(--stroke);
+}
+
+.meme-box{
+  margin-top:20px;
+  padding:20px;
+  background:#fff;
+  border-radius:20px;
+  border:1px solid var(--stroke);
+  text-align:center;
+}
+
+/* TICKER */
+.ticker{
+  overflow:hidden;
+  white-space:nowrap;
+  border-radius:20px;
+  border:1px solid var(--stroke);
+  background:#fff;
+  padding:14px 0;
+}
+.ticker-track{
+  display:inline-block;
+  animation:scroll 40s linear infinite;
+}
+.ticker-item{
+  display:inline-block;
+  margin:0 40px;
+  font-weight:700;
+}
+
+@keyframes scroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+
+.footer{text-align:center;margin-top:80px;color:var(--muted);font-weight:600}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#home" aria-label="One More Hump home">
+      <div class="brand-badge">🐪</div>
+      <div class="brand-name">One More Hump</div>
+    </a>
+
+    <div class="nav-links" aria-label="Primary">
+      <a href="#philosophy">Concept</a>
+      <a href="#memes">Memes</a>
+      <a href="#meme-lab">Meme Lab</a>
+      <a href="#launchpads">Launchpads</a>
+      <a href="#analysts">Analysts</a>
+      <a href="#watchlist">X Watchlist</a>
+      <a href="#telegram">Telegram</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ROUTED VIEWS -->
+  <div id="homeView">
+
+  <!-- HERO -->
+  <div class="hero anchor" id="home">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="kicker"><span class="kdot"></span> Camel Mode • Meme Trader Culture</div>
+        <h1>CAMEL MODE</h1>
+        <p>A culture-first movement for meme coin traders who survive the grind. Stay calm, meme hard, and keep walking — one more hump at a time.</p>
+        <div class="hero-actions">
+          <button class="btn">Join the Community</button>
+          <button class="btn secondary" type="button">View Meme Drops</button>
+        </div>
+      </div>
+      <div class="hero-media" aria-hidden="true">
+        <img class="hero-camel" src="06DDEBDD-6968-4BF1-9A79-4D3A5845162A.PNG" alt="Camel Mode camel" />
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PHILOSOPHY -->
+  <div class="section anchor" id="philosophy">
+    <h2 class="section-title">Bull. Bear. Camel.</h2>
+    <p class="section-sub">Anyone can celebrate in a bull market. Anyone can panic in a bear market. Few can stay disciplined in a Camel market.</p>
+    <div class="grid grid-3">
+      <div class="card"><h3>🐂 Bull</h3><p>Hype. Momentum. Everyone feels like a genius.</p></div>
+      <div class="card"><h3>🐻 Bear</h3><p>Fear. Capitulation. Emotions take over.</p></div>
+      <div class="card"><h3>🐪 Camel</h3><p>Chop. Patience. Discipline. Winners are built here.</p></div>
+    </div>
+  </div>
+
+  <!-- MEME ARMY -->
+  <div class="section anchor" id="memes">
+    <h2 class="section-title">Meme Army</h2>
+    <p class="section-sub">Daily memes, community energy, and coordinated chaos — all powered by Camel Mode discipline.</p>
+    <div class="grid grid-3">
+      <div class="card"><h3>Daily Drops</h3><p>Shareable meme content built for meme coin traders.</p></div>
+      <div class="card"><h3>Community Raids</h3><p>Coordinated engagement moments that build momentum.</p></div>
+      <div class="card"><h3>Camel Reactions</h3><p>Instant meme responses for pumps, dumps, and launchpad madness.</p></div>
+    </div>
+  </div>
+
+  <!-- MEME LAB -->
+  <div class="section meme-lab anchor" id="meme-lab">
+    <h2 class="section-title">🐪 Camel Meme Lab</h2>
+    <p class="section-sub">Create your own Camel Mode meme in seconds. Turn discipline into content.</p>
+    <div class="meme-box">
+      <p>[ AI Meme Generator Interface Placeholder ]</p>
+      <button class="btn">Generate Meme</button>
+    </div>
+  </div>
+
+    <!-- LAUNCHPADS -->
+  <div class="section anchor" id="launchpads">
+    <h2 class="section-title">Launchpads</h2>
+    <p class="section-sub">Explore active meme coin launch platforms. Listed alphabetically for clarity. Search by name or chain.</p>
+
+    <div style="text-align:center; margin-bottom:20px;">
+      <button class="btn" id="launchpadToggle" type="button">View All Launchpads</button>
+    </div>
+
+    <div id="launchpadDropdown" style="display:none; margin:0 auto;" class="lp-wrap">
+      <div class="card" style="padding:16px;">
+        <div style="display:flex; justify-content:center; margin-bottom:14px;">
+          <input class="lp-search" id="lpSearch" type="search" placeholder="Search launchpads…" aria-label="Search launchpads" />
+        </div>
+
+        <ul class="lp-list" id="lpList">
+          <li class="lp-item" data-name="Axiom Launch" data-chain="Multi" data-tip="Modern trading UX. Often used as a front-end for discovering/launching activity.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="Axiom Launch" href="https://axiom.trade" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">Axiom Launch</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="Bonk Launchpad" data-chain="Solana" data-tip="BONK ecosystem launch surface. Great for Solana meme communities.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="Bonk Launchpad" href="https://bonkcoin.com" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">Bonk Launchpad</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge sol">Solana</span></div>
+          </li>
+          <li class="lp-item" data-name="CoinFactory" data-chain="Multi" data-tip="Token creation + launch tooling. Always verify ownership and docs.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="CoinFactory" href="https://coinfactory.app" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">CoinFactory</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="DXSale" data-chain="Multi" data-tip="Popular presale tooling. Evaluate contract permissions and liquidity terms.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="DXSale" href="https://dxsale.app" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">DXSale</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="FairLaunch.io" data-chain="Multi" data-tip="Fair-launch styled listings. Still do diligence—fair launch ≠ safe.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="FairLaunch.io" href="https://fairlaunch.gg" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">FairLaunch.io</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="FluxBeam" data-chain="Solana" data-tip="Solana-native swap/launch surfaces. Check liquidity sources + token permissions.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="FluxBeam" href="https://fluxbeam.xyz" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">FluxBeam</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge sol">Solana</span></div>
+          </li>
+          <li class="lp-item" data-name="GemPad" data-chain="Multi" data-tip="Launchpad/presale tooling. Review vesting, locks, and team transparency.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="GemPad" href="https://gempad.app" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">GemPad</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="LaunchMyCoin" data-chain="Multi" data-tip="Token creation tooling. Prefer teams with clear docs and renounced/locked controls.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="LaunchMyCoin" href="https://launchmycoin.com" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">LaunchMyCoin</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="LetsBonk" data-chain="Solana" data-tip="Solana meme ecosystem launches. Expect fast cycles; manage risk and emotions.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="LetsBonk" href="https://letsbonk.fun" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">LetsBonk</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge sol">Solana</span></div>
+          </li>
+          <li class="lp-item" data-name="Moonshot" data-chain="Multi" data-tip="Discover/launch surfaces. Always verify contract + liquidity status.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="Moonshot" href="https://moonshot.money" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">Moonshot</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="Pinksale" data-chain="Multi" data-tip="Presales/launch listings. Check vesting + lock proofs; beware fake clones.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="Pinksale" href="https://pinksale.finance" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">Pinksale</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+          <li class="lp-item" data-name="Pump.fun" data-chain="Solana" data-tip="Fast meme launches on Solana. Bonding curves + migration cycles can move quickly.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="Pump.fun" href="https://pump.fun" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">Pump.fun</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge sol">Solana</span></div>
+          </li>
+          <li class="lp-item" data-name="Solanium" data-chain="Solana" data-tip="Solana launchpad listings. Review allocation rules + vesting.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="Solanium" href="https://solanium.io" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">Solanium</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge sol">Solana</span></div>
+          </li>
+          <li class="lp-item" data-name="SolPad" data-chain="Solana" data-tip="Solana launchpad ecosystem. Verify lock/vesting details.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="SolPad" href="https://solpad.finance" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">SolPad</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge sol">Solana</span></div>
+          </li>
+          <li class="lp-item" data-name="TrustPad" data-chain="Multi" data-tip="Launch listings across chains. Confirm verified socials and contracts.">
+            <div class="lp-left">
+              <a class="ext" data-track="launchpad" data-label="TrustPad" href="https://trustpad.io" target="_blank" rel="noopener noreferrer">
+                <span class="lp-name">TrustPad</span>
+                <svg class="ext-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 14v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="lp-meta"><span class="badge multi">Multi</span></div>
+          </li>
+        </ul>
+
+        <div class="lp-stats" aria-live="polite">
+          <div class="lp-chip" id="lpClicksChip">Launchpad clicks: 0</div>
+          <div class="lp-chip" id="lpTopChip">Top clicked: —</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYSTS -->
+  <div class="section anchor" id="analysts">
+    <h2 class="section-title">Analysts</h2>
+    <p class="section-sub">A spotlight for trusted voices. Top KOLs, top traders, and analysts can share threads, charts, and education with the Camel Mode community.</p>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>Top KOLs</h3>
+        <p>Verified creators with strong reach. Share market takes, narratives, and community updates.</p>
+        <div style="margin-top:14px; text-align:center;">
+          <button class="btn" type="button" style="background:linear-gradient(90deg,var(--camel-purple),var(--camel-teal));">View KOLs</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Top Traders</h3>
+        <p>Experienced meme coin traders. Post watchlists, setups, and trade notes (no guarantees, no signals).</p>
+        <div style="margin-top:14px; text-align:center;">
+          <button class="btn" type="button" style="background:linear-gradient(90deg,var(--camel-teal),var(--camel-purple));">View Traders</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Analysts</h3>
+        <p>Deep dives and education. Breakdowns of launchpads, project narratives, and market psychology.</p>
+        <div style="margin-top:14px; text-align:center;">
+          <button class="btn" type="button" style="background:linear-gradient(90deg,var(--camel-dune),var(--camel-gold));">View Analysts</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:18px;">
+      <button class="btn" type="button">Apply / Get Verified</button>
+    </div>
+  </div>
+
+  <!-- X WATCHLIST -->
+  <div class="section anchor" id="watchlist">
+    <h2 class="section-title">Crypto X Watchlist</h2>
+    <p class="section-sub">Curated crypto accounts. Posts and replies updated automatically.</p>
+    <div class="ticker">
+      <div class="ticker-track">
+        <span class="ticker-item">@cryptoalpha — New meme launch heating up</span>
+        <span class="ticker-item">@launchwatch — Bonding curve migration today</span>
+        <span class="ticker-item">@memetrader — Survived another red candle</span>
+        <span class="ticker-item">@solana — Network updates rolling out</span>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:18px;">
+      <button class="btn" id="viewAccountsBtn" type="button" style="background:linear-gradient(90deg,var(--camel-purple),var(--camel-teal));">View Watchlist Accounts</button>
+    </div>
+  </div>
+
+  <!-- TELEGRAM HUB -->
+  <div class="section anchor" id="telegram">
+    <h2 class="section-title">Telegram Hub</h2>
+    <p class="section-sub">One More Hump posts the same core updates on Telegram, plus links to other channels we track.</p>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>Official Channel</h3>
+        <p>Fast updates + the same drops you see on X (memes, community calls, highlights).</p>
+      </div>
+      <div class="card">
+        <h3>Channel Directory</h3>
+        <p>Browse the channels we follow (alphabetical or by members). Open any channel in Telegram.</p>
+      </div>
+      <div class="card">
+        <h3>Link Drops</h3>
+        <p>When important threads or channels pop off, we surface the link in one place.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:18px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <button class="btn" id="openOfficialTgBtn" type="button" style="background:linear-gradient(90deg,var(--camel-teal),var(--camel-teal));">Open Official Telegram</button>
+      <button class="btn" id="viewTelegramBtn" type="button" style="background:linear-gradient(90deg,var(--camel-dune),var(--camel-gold));">View Telegram Channels</button>
+    </div>
+  </div>
+
+    <div class="footer">🐪 One More Hump — Survive the Grind.</div>
+
+  </div><!-- /#homeView -->
+
+  <!-- ACCOUNTS PAGE (client-side) -->
+  <div id="accountsView" style="display:none;">
+    <div class="hero" style="padding:46px 20px;">
+      <h1 style="font-size:40px;">X Accounts</h1>
+      <p style="margin-bottom:18px;">These are the accounts we pull posts + replies from for the Crypto X Watchlist ticker. Sort them alphabetically or by followers.</p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn" id="sortAlphaBtn" type="button">Sort A → Z</button>
+        <button class="btn" id="sortFollowersBtn" type="button">Sort by Followers</button>
+        <button class="btn" id="backHomeBtn" type="button" style="background:linear-gradient(90deg,var(--camel-teal),var(--camel-teal));">Back to Home</button>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top:36px;">
+      <h2 class="section-title" style="font-size:26px;">Watchlist Directory</h2>
+      <p class="section-sub" style="margin-bottom:18px;">Click an account to open it on X. (Follower counts are placeholders until we connect the backend.)</p>
+
+      <div class="card" style="overflow:hidden; padding:0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--stroke); background:rgba(255,255,255,.92);">
+          <div style="font-weight:800;">Accounts (<span id="acctCount">0</span>)</div>
+          <div style="color:var(--muted); font-weight:650; font-size:13px;">Pre-token build • list is configurable</div>
+        </div>
+
+        <div style="overflow:auto; max-height:520px;">
+          <table style="width:100%; border-collapse:collapse; min-width:520px;">
+            <thead>
+              <tr style="text-align:left; background:rgba(246,247,251,.85);">
+                <th style="padding:12px 18px; font-size:13px; color:rgba(20,24,40,.75);">Account</th>
+                <th style="padding:12px 18px; font-size:13px; color:rgba(20,24,40,.75);">Category</th>
+                <th style="padding:12px 18px; font-size:13px; color:rgba(20,24,40,.75);">Followers</th>
+              </tr>
+            </thead>
+            <tbody id="accountsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Tip: We can later add search, tags (Solana/Memes/News), and auto-refresh follower counts.</div>
+  </div><!-- /#accountsView -->
+
+  <!-- TELEGRAM PAGE (client-side) -->
+  <div id="telegramView" style="display:none;">
+    <div class="hero" style="padding:46px 20px;">
+      <h1 style="font-size:40px;">Telegram Channels</h1>
+      <p style="margin-bottom:18px;">This directory contains the Telegram channels we link to from the official One More Hump channel. Sort alphabetically or by members.</p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn" id="tgSortAlphaBtn" type="button">Sort A → Z</button>
+        <button class="btn" id="tgSortMembersBtn" type="button">Sort by Members</button>
+        <button class="btn" id="tgBackHomeBtn" type="button" style="background:linear-gradient(90deg,var(--camel-teal),var(--camel-teal));">Back to Home</button>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top:36px;">
+      <h2 class="section-title" style="font-size:26px;">Channel Directory</h2>
+      <p class="section-sub" style="margin-bottom:18px;">Click any channel to open it in Telegram. (Member counts are placeholders until we connect the backend.)</p>
+
+      <div class="card" style="overflow:hidden; padding:0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--stroke); background:rgba(255,255,255,.92);">
+          <div style="font-weight:800;">Channels (<span id="tgCount">0</span>)</div>
+          <div style="color:var(--muted); font-weight:650; font-size:13px;">Pre-token build • list is configurable</div>
+        </div>
+
+        <div style="overflow:auto; max-height:520px;">
+          <table style="width:100%; border-collapse:collapse; min-width:560px;">
+            <thead>
+              <tr style="text-align:left; background:rgba(246,247,251,.85);">
+                <th style="padding:12px 18px; font-size:13px; color:rgba(20,24,40,.75);">Channel</th>
+                <th style="padding:12px 18px; font-size:13px; color:rgba(20,24,40,.75);">Focus</th>
+                <th style="padding:12px 18px; font-size:13px; color:rgba(20,24,40,.75);">Members</th>
+              </tr>
+            </thead>
+            <tbody id="tgTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Tip: Later we can auto-sync member counts and the latest pinned link drops.</div>
+  </div><!-- /#telegramView -->
+
+</div>
+
+<script>
+// --- Launchpads dropdown toggle + polish (search, tooltips already in CSS, tracking) ---
+(function(){
+  const btn = document.getElementById('launchpadToggle');
+  const dd = document.getElementById('launchpadDropdown');
+  const search = document.getElementById('lpSearch');
+  const list = document.getElementById('lpList');
+  const clicksChip = document.getElementById('lpClicksChip');
+  const topChip = document.getElementById('lpTopChip');
+
+  function safeNum(n){ return Number.isFinite(n) ? n : 0; }
+
+  function readStats(){
+    try{
+      const raw = localStorage.getItem('omh_lp_stats');
+      return raw ? JSON.parse(raw) : { total:0, by:{} };
+    }catch(e){
+      return { total:0, by:{} };
+    }
+  }
+
+  function writeStats(stats){
+    try{ localStorage.setItem('omh_lp_stats', JSON.stringify(stats)); }catch(e){}
+  }
+
+  function updateChips(){
+    const stats = readStats();
+    if(clicksChip) clicksChip.textContent = 'Launchpad clicks: ' + String(safeNum(stats.total));
+
+    let top = '—';
+    let best = -1;
+    if(stats.by){
+      Object.keys(stats.by).forEach(function(k){
+        const v = safeNum(stats.by[k]);
+        if(v > best){ best = v; top = k + ' (' + v + ')'; }
+      });
+    }
+    if(topChip) topChip.textContent = 'Top clicked: ' + top;
+  }
+
+  function trackOutbound(kind, label, url){
+    const stats = readStats();
+    stats.total = safeNum(stats.total) + 1;
+    stats.by = stats.by || {};
+    stats.by[label] = safeNum(stats.by[label]) + 1;
+    writeStats(stats);
+    updateChips();
+    // eslint-disable-next-line no-console
+    console.log('[OMH outbound]', kind, label, url);
+  }
+
+  if(btn && dd){
+    btn.addEventListener('click', function(){
+      const open = dd.style.display !== 'none';
+      dd.style.display = open ? 'none' : 'block';
+      btn.textContent = open ? 'View All Launchpads' : 'Hide Launchpads';
+      if(!open){
+        updateChips();
+        if(search) search.focus();
+      }
+    });
+  }
+
+  if(search && list){
+    search.addEventListener('input', function(){
+      const q = (search.value || '').trim().toLowerCase();
+      const items = list.querySelectorAll('.lp-item');
+      items.forEach(function(li){
+        const name = (li.getAttribute('data-name') || '').toLowerCase();
+        const chain = (li.getAttribute('data-chain') || '').toLowerCase();
+        const show = !q || name.includes(q) || chain.includes(q);
+        li.style.display = show ? 'flex' : 'none';
+      });
+    });
+  }
+
+  if(list){
+    list.addEventListener('click', function(e){
+      const a = e.target && e.target.closest ? e.target.closest('a[data-track="launchpad"]') : null;
+      if(!a) return;
+      const label = a.getAttribute('data-label') || 'Launchpad';
+      const url = a.getAttribute('href') || '';
+      trackOutbound('launchpad', label, url);
+    });
+  }
+
+  updateChips();
+})();
+
+// --- Simple client-side routing for Accounts + Telegram pages ---
+(function(){
+  const homeView = document.getElementById('homeView');
+  const accountsView = document.getElementById('accountsView');
+  const telegramView = document.getElementById('telegramView');
+
+  // Home buttons
+  const viewAccountsBtn = document.getElementById('viewAccountsBtn');
+  const viewTelegramBtn = document.getElementById('viewTelegramBtn');
+  const openOfficialTgBtn = document.getElementById('openOfficialTgBtn');
+
+  // Accounts page controls
+  const backHomeBtn = document.getElementById('backHomeBtn');
+  const sortAlphaBtn = document.getElementById('sortAlphaBtn');
+  const sortFollowersBtn = document.getElementById('sortFollowersBtn');
+  const tbody = document.getElementById('accountsTbody');
+  const acctCount = document.getElementById('acctCount');
+
+  // Telegram page controls
+  const tgBackHomeBtn = document.getElementById('tgBackHomeBtn');
+  const tgSortAlphaBtn = document.getElementById('tgSortAlphaBtn');
+  const tgSortMembersBtn = document.getElementById('tgSortMembersBtn');
+  const tgTbody = document.getElementById('tgTbody');
+  const tgCount = document.getElementById('tgCount');
+
+  // === CONFIG (placeholders until you provide final lists) ===
+  // Replace/extend with your chosen accounts (target 200).
+  const accounts = [
+    { handle: 'solana', category: 'Network', followers: 0 },
+    { handle: 'bonk_inu', category: 'Meme', followers: 0 },
+    { handle: 'pumpdotfun', category: 'Launchpad', followers: 0 },
+    { handle: 'coinmarketcap', category: 'News/Data', followers: 0 },
+    { handle: 'coingecko', category: 'News/Data', followers: 0 },
+    { handle: 'Lookonchain', category: 'On-chain', followers: 0 },
+    { handle: 'WhaleTrades', category: 'On-chain', followers: 0 },
+    { handle: 'DeFiLlama', category: 'Data', followers: 0 },
+    { handle: 'TheBlock__', category: 'News', followers: 0 },
+    { handle: 'BanklessHQ', category: 'Media', followers: 0 }
+  ];
+
+  // Telegram directory: official + linked channels
+  // NOTE: Telegram links can be https://t.me/<name>
+  const telegramChannels = [
+    { name: 'OneMoreHump (Official)', handle: 'OneMoreHump', focus: 'Official', members: 0 },
+    { name: 'Solana Memes', handle: 'solanamemes', focus: 'Memes', members: 0 },
+    { name: 'Meme Coin Radar', handle: 'memecoinradar', focus: 'New launches', members: 0 },
+    { name: 'Launchpad Alerts', handle: 'launchpadalerts', focus: 'Launchpads', members: 0 },
+    { name: 'On-chain Watch', handle: 'onchainwatch', focus: 'Wallet tracking', members: 0 }
+  ];
+
+  // === Helpers ===
+  function fmtFollowers(n){
+    if(!n) return '—';
+    if(n >= 1e6) return (Math.round(n/1e5)/10) + 'M';
+    if(n >= 1e3) return (Math.round(n/1e2)/10) + 'K';
+    return String(n);
+  }
+  function fmtMembers(n){
+    return fmtFollowers(n);
+  }
+
+  // === Routing ===
+  function showHome(){
+    if(homeView) homeView.style.display = 'block';
+    if(accountsView) accountsView.style.display = 'none';
+    if(telegramView) telegramView.style.display = 'none';
+    history.replaceState({}, '', '#home');
+    window.scrollTo(0,0);
+  }
+  function showAccounts(){
+    if(homeView) homeView.style.display = 'none';
+    if(accountsView) accountsView.style.display = 'block';
+    if(telegramView) telegramView.style.display = 'none';
+    history.replaceState({}, '', '#accounts');
+    window.scrollTo(0,0);
+  }
+  function showTelegram(){
+    if(homeView) homeView.style.display = 'none';
+    if(accountsView) accountsView.style.display = 'none';
+    if(telegramView) telegramView.style.display = 'block';
+    history.replaceState({}, '', '#telegram');
+    window.scrollTo(0,0);
+  }
+
+  // === Accounts rendering ===
+  function rowHtml(a){
+    const url = 'https://x.com/' + encodeURIComponent(a.handle);
+    return (
+      '<tr style="border-top:1px solid rgba(20,24,40,.06);">' +
+        '<td style="padding:12px 18px; font-weight:850;">' +
+          '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color:inherit; text-decoration:none;">@' + a.handle + '</a>' +
+        '</td>' +
+        '<td style="padding:12px 18px; color:var(--muted); font-weight:650;">' + (a.category || '—') + '</td>' +
+        '<td style="padding:12px 18px; font-weight:750;">' + fmtFollowers(a.followers) + '</td>' +
+      '</tr>'
+    );
+  }
+  function renderAccounts(list){
+    if(!tbody) return;
+    tbody.innerHTML = list.map(rowHtml).join('');
+    if(acctCount) acctCount.textContent = String(list.length);
+  }
+  function sortAccountsAlpha(){
+    const list = accounts.slice().sort(function(a,b){
+      return a.handle.toLowerCase().localeCompare(b.handle.toLowerCase());
+    });
+    renderAccounts(list);
+  }
+  function sortAccountsFollowers(){
+    const list = accounts.slice().sort(function(a,b){
+      return (b.followers || 0) - (a.followers || 0) || a.handle.toLowerCase().localeCompare(b.handle.toLowerCase());
+    });
+    renderAccounts(list);
+  }
+
+  // === Telegram rendering ===
+  function tgRowHtml(c){
+    const url = 'https://t.me/' + encodeURIComponent(c.handle);
+    return (
+      '<tr style="border-top:1px solid rgba(20,24,40,.06);">' +
+        '<td style="padding:12px 18px; font-weight:850;">' +
+          '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color:inherit; text-decoration:none;">' + c.name + '</a>' +
+          '<div style="color:var(--muted); font-weight:650; font-size:12px; margin-top:2px;">t.me/' + c.handle + '</div>' +
+        '</td>' +
+        '<td style="padding:12px 18px; color:var(--muted); font-weight:650;">' + (c.focus || '—') + '</td>' +
+        '<td style="padding:12px 18px; font-weight:750;">' + fmtMembers(c.members) + '</td>' +
+      '</tr>'
+    );
+  }
+  function renderTelegram(list){
+    if(!tgTbody) return;
+    tgTbody.innerHTML = list.map(tgRowHtml).join('');
+    if(tgCount) tgCount.textContent = String(list.length);
+  }
+  function sortTelegramAlpha(){
+    const list = telegramChannels.slice().sort(function(a,b){
+      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    });
+    renderTelegram(list);
+  }
+  function sortTelegramMembers(){
+    const list = telegramChannels.slice().sort(function(a,b){
+      return (b.members || 0) - (a.members || 0) || a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    });
+    renderTelegram(list);
+  }
+
+  // === Wiring ===
+  if(viewAccountsBtn) viewAccountsBtn.addEventListener('click', showAccounts);
+  if(viewTelegramBtn) viewTelegramBtn.addEventListener('click', showTelegram);
+  if(openOfficialTgBtn){
+    openOfficialTgBtn.addEventListener('click', function(){
+      // Update this handle when your official channel is final
+      window.open('https://t.me/OneMoreHump', '_blank');
+    });
+  }
+
+  if(sortAlphaBtn) sortAlphaBtn.addEventListener('click', sortAccountsAlpha);
+  if(sortFollowersBtn) sortFollowersBtn.addEventListener('click', sortAccountsFollowers);
+  if(backHomeBtn) backHomeBtn.addEventListener('click', showHome);
+
+  if(tgSortAlphaBtn) tgSortAlphaBtn.addEventListener('click', sortTelegramAlpha);
+  if(tgSortMembersBtn) tgSortMembersBtn.addEventListener('click', sortTelegramMembers);
+  if(tgBackHomeBtn) tgBackHomeBtn.addEventListener('click', showHome);
+
+  // Init
+  sortAccountsAlpha();
+  sortTelegramAlpha();
+
+  // Handle hash navigation
+  if(location.hash === '#accounts') showAccounts();
+  else if(location.hash === '#telegram') showTelegram();
+})();
+</script>
+
+</body>
+</html>
