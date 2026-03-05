@@ -1,0 +1,20 @@
+.nav {
+  position: sticky;
+}
+.spacer {
+  flex: 1;
+}
+
+.brand-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--camel-dune), var(--camel-gold));
+  box-shadow: 0 10px 30px rgba(80, 50, 20, 0.18);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+.brand-name {
+  margin-left: 5px;
+}
